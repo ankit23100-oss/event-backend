@@ -20,6 +20,15 @@ app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/bookings', bookingRoutes);
 
+
+// ✅ Add this
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Eventora Backend is Running 🚀"
+  });
+});
+
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/eventora')
   .then(() => console.log('MongoDB Connected'))
