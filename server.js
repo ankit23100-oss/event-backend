@@ -12,12 +12,20 @@ const bookingRoutes = require('./routes/bookings');
 const app = express();
 
 // Middleware
-app.use(
-  cors({
-    origin: 'https://event-frontend-sxpv-lm9ealprz-ankit-kumar-singh-s-jsrh.vercel.app',
-    credentials: true,
-  })
-);
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://event-frontend-sxpv-lm9ealprz-ankit-kumar-singh-s-jsrh.vercel.app';
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(
+    cors({
+      origin: FRONTEND_URL,
+      credentials: true,
+    })
+  );
+} else {
+  // Allow all origins in development for ease of local testing
+  app.use(cors());
+}
+
 app.use(express.json());
 
 // Routes
