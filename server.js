@@ -12,7 +12,12 @@ const bookingRoutes = require('./routes/bookings');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: 'https://event-frontend-sxpv-lm9ealprz-ankit-kumar-singh-s-jsrh.vercel.app',
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Routes
