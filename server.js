@@ -12,7 +12,7 @@ const bookingRoutes = require('./routes/bookings');
 const app = express();
 
 // Middleware
-const FRONTEND_URL = process.env.FRONTEND_URL || 'https://event-frontend-sxpv-lm9ealprz-ankit-kumar-singh-s-jsrh.vercel.app';
+const FRONTEND_URL = (process.env.FRONTEND_URL || 'https://event-frontend-sxpv-lm9ealprz-ankit-kumar-singh-s-jsrh.vercel.app').replace(/\/$/, '');
 
 if (process.env.NODE_ENV === 'production') {
   app.use(
