@@ -3,6 +3,11 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+console.log('Email config:', {
+    EMAIL_USER_set: !!process.env.EMAIL_USER,
+    EMAIL_PASS_set: !!process.env.EMAIL_PASS
+});
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
