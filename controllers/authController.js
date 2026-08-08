@@ -42,7 +42,8 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email: rawEmail, password } = req.body;
+        const email = rawEmail.trim().toLowerCase();
         const user = await User.findOne({ email });
         if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
@@ -71,7 +72,12 @@ exports.login = async (req, res) => {
 
 exports.verifyOTP = async (req, res) => {
     try {
-        const { email, otp } = req.body;
+        const { email: rawEmail, otp: rawOtp } = req.body;
+        const email = rawEmail.trim().toLowerCase();
+        const otp = rawOtp.toString().trim();
+
+        console.log('Verify OTP request', { email, otp });
+
         const validOTP = await OTP.findOne({ email, otp, action: 'account_verification' });
 
         if (!validOTP) {
@@ -89,6 +95,7 @@ exports.verifyOTP = async (req, res) => {
             token: generateToken(user.id, user.role)
         });
     } catch (error) {
+        console.error('Verify OTP error', error);
         res.status(500).json({ message: 'Server Error' });
     }
 };
