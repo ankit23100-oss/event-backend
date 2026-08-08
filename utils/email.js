@@ -11,26 +11,45 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Validate SMTP configuration early so deployment logs show credential or auth issues
+transporter.verify((error, success) => {
+    if (error) {
+        console.error('SMTP verification failed:', error);
+    } else {
+        console.log('SMTP server is ready to send messages');
+    }
+});
+
 const sendBookingEmail = async (userEmail, userName, eventTitle) => {
-    try {
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: userEmail,
-            subject: `Booking Confirmed: ${eventTitle}`,
-            html: `
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        throw new Error('Missing EMAIL_USER or EMAIL_PASS environment variables');
+    }
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: userEmail,
+        subject: `Booking Confirmed: ${eventTitle}`,
+        html: `
         <h2>Hi ${userName}!</h2>
         <p>Your booking for the event <strong>${eventTitle}</strong> is successfully confirmed.</p>
         <p>Thank you for choosing Eventora.</p>
       `
-        };
+    };
+
+    try {
         await transporter.sendMail(mailOptions);
         console.log('Email sent successfully to', userEmail);
     } catch (error) {
         console.error('Error sending email:', error);
+        throw error;
     }
 };
 
 const sendOTPEmail = async (userEmail, otp, type) => {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        throw new Error('Missing EMAIL_USER or EMAIL_PASS environment variables');
+    }
+
     try {
         const title = type === 'account_verification' ? 'Verify your Eventora Account' : 'Eventora Booking Verification';
         const msg = type === 'account_verification'
@@ -56,6 +75,7 @@ const sendOTPEmail = async (userEmail, otp, type) => {
         console.log(`OTP sent to ${userEmail} for ${type}`);
     } catch (error) {
         console.error('Error sending OTP email:', error);
+        throw error;
     }
 };
 
